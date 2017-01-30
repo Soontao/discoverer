@@ -10,7 +10,8 @@
       "program": "${workspaceRoot}\\bin\\www",
       "cwd": "${workspaceRoot}",
       "env": {
-        "NODE_ENV": "producton"
+        "NODE_ENV": "producton",
+        "DEBUG": "discoverer:*"
       }
     },
     {
