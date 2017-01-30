@@ -1,2 +1,3 @@
 # discoverer
-Golang Services Discovery Server
+
+nodejs service discover
