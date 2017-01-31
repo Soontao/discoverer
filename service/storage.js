@@ -4,6 +4,9 @@ const debug = require('debug')('discoverer:store');
 const forEach = require('lodash').forEach;
 
 
+/**
+ * remove expired instances from registry
+ */
 function checkExpired() {
   const currentTime = new Date()
   forEach(services, (instances, serviceName) => {
@@ -14,6 +17,9 @@ function checkExpired() {
   });
 }
 
+/**
+ * run check expired instances per seconds
+ */
 setInterval(checkExpired, 1000);
 
 
@@ -40,6 +46,12 @@ function ServiceInstanceInfo(object) {
   return result;
 }
 
+/**
+ * check a instance if it existed before
+ * 
+ * @param {Object} instanceInfo
+ * @returns {Boolean}
+ */
 function instanceIsExisted(instanceInfo) {
   if (services[instanceInfo.serviceName] && services[instanceInfo.serviceName][instanceInfo.instanceId])
     return true
@@ -57,10 +69,12 @@ function instanceIsExisted(instanceInfo) {
  */
 function addInstance(originInfo) {
   let instanceInfo = ServiceInstanceInfo(originInfo);
+  // if service node not exist,create the node
   if (!services[instanceInfo.serviceName])
     services[instanceInfo.serviceName] = {};
   if (!services[instanceInfo.serviceName][instanceInfo.instanceId]) {
     services[instanceInfo.serviceName][instanceInfo.instanceId] = instanceInfo;
+    return instanceInfo
   } else
     throw new Error(`Instance from ${instanceInfo.instanceId} has been registered before, use other api to refresh`);
 }
@@ -72,9 +86,10 @@ function addInstance(originInfo) {
  */
 function updateInstance(originInfo) {
   let instanceInfo = ServiceInstanceInfo(originInfo);
-  if (instanceIsExisted(instanceInfo))
+  if (instanceIsExisted(instanceInfo)) {
     services[instanceInfo.serviceName][instanceInfo.instanceId] = instanceInfo;
-  else
+    return instanceInfo
+  } else
     throw new Error("No such service ${instanceInfo.serviceName} or The instance not register before");
 }
 
@@ -87,7 +102,8 @@ function deleteInstance(originInfo) {
   let instanceInfo = ServiceInstanceInfo(originInfo);
   if (instanceIsExisted(instanceInfo)) {
     delete(services[instanceInfo.serviceName][instanceInfo.instanceId])
-    debug(`deleted instance ${instanceInfo.instanceId}`)
+    debug(`remove instance ${instanceInfo.instanceId} from registry`)
+    return instanceInfo
   } else
     throw new Error("The instance ${instanceInfo.instanceId} not register before");
 }
