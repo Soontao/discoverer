@@ -9,6 +9,17 @@ const debug = require('debug')('discoverer:client');
  */
 class DiscovererClient {
 
+  /**
+   * Creates an instance of DiscovererClient.
+   * 
+   * @param {string} serverUrl Discoverer Server URL, Include server port
+   * @param {string} serviceName The service name of this instance
+   * @param {string} instanceIp
+   * @param {string} instancePort
+   * @param {string} instanceId
+   * 
+   * @memberOf DiscovererClient
+   */
   constructor(serverUrl, serviceName, instanceIp, instancePort, instanceId) {
     if (!serverUrl) // if Server Url not be defined, throw an error
       throw new Error("Discoverer Server URL must be specify")

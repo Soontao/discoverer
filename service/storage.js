@@ -21,7 +21,7 @@ function checkExpired() {
 /**
  * run check expired instances per seconds
  */
-setInterval(checkExpired, 1000);
+setInterval(checkExpired, process.env.EXPIRE_INT || 1000);
 
 
 /**
