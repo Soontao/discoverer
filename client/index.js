@@ -20,7 +20,7 @@ class DiscovererClient {
    * 
    * @memberOf DiscovererClient
    */
-  constructor(serverUrl, serviceName, instanceIp, instancePort, instanceId) {
+  constructor(serverUrl = 'http://127.0.0.1:3000', serviceName = 'nullService', instanceIp = undefined, instancePort = 80, instanceId = undefined, heartBreakInterval = 15) {
     if (!serverUrl) // if Server Url not be defined, throw an error
       throw new Error("Discoverer Server URL must be specify")
     if (!serviceName) // if service name not be defined, throw an error
@@ -29,11 +29,24 @@ class DiscovererClient {
     this.serviceName = serviceName;
     this.instanceIp = instanceIp;
     this.instancePort = instancePort;
-    this.instanceId = instanceId || `${this.instanceIp}:${this.instancePort}`;
+    this.instanceId = instanceId;
+    this.heartBreakInterval = heartBreakInterval;
     this.REGISTE_URL = `${this.serverUrl}/discoverer/registe`;
     this.RENEW_URL = `${this.serverUrl}/discoverer/renew`;
     this.UNREGISTE_URL = `${this.serverUrl}/discoverer/unregiste`;
     this.CLIENTS_URL = `${this.serverUrl}/discoverer/clients`;
+  }
+
+  startHeartBreak() {
+    this.heartbreak = setInterval(this.renew, this.heartBreakInterval * 1000);
+    debug(`instance ${this.instanceId} heartbreak started`)
+  }
+
+  stopHeartBreak() {
+    if (this.heartbreak) {
+      clearInterval(this.heartBreakInterval);
+      debug(`instance ${this.instanceId} heartbreak stoped`)
+    }
   }
 
   getThisServiceInstanceInfo() {
@@ -45,28 +58,60 @@ class DiscovererClient {
     }
   }
 
-  registe() {
+  registe(done) {
     const option = {
       url: this.REGISTE_URL,
       method: "POST",
       json: true,
-      body: JSON.stringify(this.getThisServiceInstanceInfo())
+      body: this.getThisServiceInstanceInfo()
     }
     request(option, (err, req, body) => {
       if (err) throw err;
+      // refresh intanceId
+      this.instanceId = body.registed.instanceId;
+      this.startHeartBreak();
+      done(body);
     })
   }
 
-  unregiste() {
+  unregiste(done) {
+    const option = {
+      url: this.UNREGISTE_URL,
+      method: "DELETE",
+      json: true,
+      body: this.getThisServiceInstanceInfo()
+    }
+    request(option, (err, req, body) => {
+      if (err) throw err
+      done(body);
+    })
 
   }
 
-  clients() {
-
+  clients(done) {
+    const option = {
+      url: this.CLIENTS_URL,
+      method: "GET",
+      json: true,
+      body: this.getThisServiceInstanceInfo()
+    }
+    request(option, (err, req, body) => {
+      if (err) throw err;
+      done(body);
+    })
   }
 
-  renew() {
-
+  renew(done) {
+    const option = {
+      url: this.RENEW_URL,
+      method: "PUT",
+      json: true,
+      body: this.getThisServiceInstanceInfo()
+    }
+    request(option, (err, req, body) => {
+      if (err) throw err;
+      done(body);
+    })
   }
 
 }

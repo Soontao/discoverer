@@ -7,7 +7,7 @@
       "type": "node",
       "request": "launch",
       "name": "启动程序",
-      "program": "${workspaceRoot}\\bin\\www",
+      "program": "${workspaceRoot}\\server\\index.js",
       "cwd": "${workspaceRoot}",
       "env": {
         "NODE_ENV": "producton",

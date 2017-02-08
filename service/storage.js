@@ -2,6 +2,8 @@
 const services = {};
 const debug = require('debug')('discoverer:store');
 const forEach = require('lodash').forEach;
+const uuid = require('uuid');
+const size = require('lodash').size
 
 
 
@@ -12,8 +14,10 @@ function checkExpired() {
   const currentTime = new Date()
   forEach(services, (instances, serviceName) => {
     forEach(instances, (instanceInfo, instanceId) => {
-      if (instanceInfo.expires < currentTime)
+      if (instanceInfo.expires < currentTime) {
+        debug(`instance ${instanceInfo.instanceId} is expired`)
         deleteInstance(instanceInfo)
+      }
     })
   });
 }
@@ -43,7 +47,7 @@ function ServiceInstanceInfo(object) {
     result.expires = getDateAfterSeconds();
   } else
     throw Error("params not complete")
-  result.instanceId = object.instanceId || `${object.instanceIp}:${object.instancePort}`
+  result.instanceId = object.instanceId || uuid()
   return result;
 }
 
@@ -102,11 +106,15 @@ function updateInstance(originInfo) {
 function deleteInstance(originInfo) {
   let instanceInfo = ServiceInstanceInfo(originInfo);
   if (instanceIsExisted(instanceInfo)) {
-    delete(services[instanceInfo.serviceName][instanceInfo.instanceId])
-    debug(`remove instance ${instanceInfo.instanceId} from registry`)
+    delete (services[instanceInfo.serviceName][instanceInfo.instanceId])
+    debug(`removed instance ${instanceInfo.instanceId} from registry`)
+    if (size(services[instanceInfo.serviceName]) == 0) {
+      delete services[instanceInfo.serviceName];
+      debug(`removed service ${instanceInfo.serviceName}, there is no instance in it`)
+    }
     return instanceInfo
   } else
-    throw new Error("The instance ${instanceInfo.instanceId} not register before");
+    throw new Error("The instance ${instanceInfo.instanceId} not be registed before");
 }
 
 
