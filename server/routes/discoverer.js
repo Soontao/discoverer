@@ -1,8 +1,13 @@
 const express = require('express');
-const route = express.Router();
+const router = express.Router();
 const servicesStore = require('../service/storage')
 
-route.all('/*', (req, res, next) => {
+/**
+ * if you want to registe a discoverer instance, 
+ * you should give out your instancePort and serviceName
+ */
+
+router.all('/*', (req, res, next) => {
   // only get method not need param check
   if (req.method.toLowerCase() == 'get') {
     next();
@@ -21,7 +26,7 @@ route.all('/*', (req, res, next) => {
   next();
 })
 
-route.post('/registe', (req, res, next) => {
+router.post('/registe', (req, res, next) => {
   const addedInstanceInfo = servicesStore.addInstance(req.body);
   res.json({
     'api': 'registe a new client',
@@ -29,7 +34,7 @@ route.post('/registe', (req, res, next) => {
   })
 });
 
-route.delete('/unregiste', (req, res, next) => {
+router.delete('/unregiste', (req, res, next) => {
   const deletedInstanceInfo = servicesStore.deleteInstance(req.body);
   res.json({
     'api': 'unregiste a existed client',
@@ -38,14 +43,14 @@ route.delete('/unregiste', (req, res, next) => {
   })
 });
 
-route.get('/clients', (req, res, next) => {
+router.get('/clients', (req, res, next) => {
   res.json({
     'api': 'get all active services clients',
     'services': servicesStore.getInstances()
   })
 });
 
-route.put('/renew', (req, res, next) => {
+router.put('/renew', (req, res, next) => {
   const updatedInstanceInfo = servicesStore.updateInstance(req.body);
   res.json({
     'api': 'renew this service',
@@ -54,4 +59,11 @@ route.put('/renew', (req, res, next) => {
   })
 })
 
-module.exports = route;
+router.get('/checkExpired', req => {
+  req.res.json({
+    'api': 'remove expired service instances',
+    'removedCount': servicesStore.checkExpired()
+  })
+})
+
+module.exports = router;

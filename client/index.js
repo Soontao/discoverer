@@ -21,10 +21,6 @@ class DiscovererClient {
    * @memberOf DiscovererClient
    */
   constructor(serverUrl = 'http://127.0.0.1:3000', serviceName = 'nullService', instanceIp = undefined, instancePort = 80, instanceId = undefined, heartBreakInterval = 15) {
-    if (!serverUrl) // if Server Url not be defined, throw an error
-      throw new Error("Discoverer Server URL must be specify")
-    if (!serviceName) // if service name not be defined, throw an error
-      throw new Error("Service Name must be defined")
     this.serverUrl = serverUrl;
     this.serviceName = serviceName;
     this.instanceIp = instanceIp;
@@ -44,7 +40,7 @@ class DiscovererClient {
 
   stopHeartBreak() {
     if (this.heartbreak) {
-      clearInterval(this.heartBreakInterval);
+      clearInterval(this.heartbreak);
       debug(`instance ${this.instanceId} heartbreak stoped`)
     }
   }

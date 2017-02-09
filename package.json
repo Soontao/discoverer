@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./server",
-    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "test2": "istanbul cover ./node_modules/mocha/bin/_mocha"
   },
   "engines": {
     "node": "6.9.2",
@@ -20,6 +21,7 @@
     "lodash": "^4.17.4",
     "mocha": "^3.2.0",
     "morgan": "~1.7.0",
+    "morgan-debug": "^2.0.0",
     "request": "^2.79.0",
     "serve-favicon": "~2.3.0",
     "uuid": "^3.0.1"

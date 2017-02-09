@@ -12,14 +12,17 @@ const size = require('lodash').size
  */
 function checkExpired() {
   const currentTime = new Date()
+  let removedCount = 0;
   forEach(services, (instances, serviceName) => {
     forEach(instances, (instanceInfo, instanceId) => {
       if (instanceInfo.expires < currentTime) {
         debug(`instance ${instanceInfo.instanceId} is expired`)
         deleteInstance(instanceInfo)
+        removedCount += 1;
       }
     })
   });
+  return removedCount;
 }
 
 /**
@@ -145,5 +148,6 @@ module.exports = {
   addInstance,
   getInstances,
   deleteInstance,
-  updateInstance
+  updateInstance,
+  checkExpired
 }
