@@ -21,92 +21,120 @@ class DiscovererClient {
    * @memberOf DiscovererClient
    */
   constructor(serverUrl = 'http://127.0.0.1:3000', serviceName = 'nullService', instanceIp = undefined, instancePort = 80, instanceId = undefined, heartBreakInterval = 15) {
-    this.serverUrl = serverUrl;
-    this.serviceName = serviceName;
-    this.instanceIp = instanceIp;
-    this.instancePort = instancePort;
-    this.instanceId = instanceId;
-    this.heartBreakInterval = heartBreakInterval;
-    this.REGISTE_URL = `${this.serverUrl}/discoverer/registe`;
-    this.RENEW_URL = `${this.serverUrl}/discoverer/renew`;
-    this.UNREGISTE_URL = `${this.serverUrl}/discoverer/unregiste`;
-    this.CLIENTS_URL = `${this.serverUrl}/discoverer/clients`;
+    this._serverUrl = serverUrl;
+    this._serviceName = serviceName;
+    this._instanceIp = instanceIp;
+    this._instancePort = instancePort;
+    this._instanceId = instanceId;
+    this._heartBreakInterval = heartBreakInterval;
+    this._servicesCache = {};
+    this.REGISTE_URL = `${this._serverUrl}/discoverer/registe`;
+    this.RENEW_URL = `${this._serverUrl}/discoverer/renew`;
+    this.UNREGISTE_URL = `${this._serverUrl}/discoverer/unregiste`;
+    this.CLIENTS_URL = `${this._serverUrl}/discoverer/clients`;
   }
 
-  startHeartBreak() {
-    this.heartbreak = setInterval(this.renew, this.heartBreakInterval * 1000);
-    debug(`instance ${this.instanceId} heartbreak started`)
+  _startHeartBreak() {
+    this.heartbreak = setInterval(this._renew, this._heartBreakInterval * 1000);
+    debug(`instance ${this._instanceId} heartbreak started`)
   }
 
-  stopHeartBreak() {
+  _stopHeartBreak() {
     if (this.heartbreak) {
       clearInterval(this.heartbreak);
-      debug(`instance ${this.instanceId} heartbreak stoped`)
+      debug(`instance ${this._instanceId} heartbreak stoped`)
     }
   }
 
-  getThisServiceInstanceInfo() {
+  getThisClientInfo() {
     return {
-      serviceName: this.serviceName,
-      instancePort: this.instancePort,
-      instanceIp: this.instanceIp,
-      instanceId: this.instanceId
+      serviceName: this._serviceName,
+      instancePort: this._instancePort,
+      instanceIp: this._instanceIp,
+      instanceId: this._instanceId
     }
   }
 
-  registe(done) {
+
+  /**
+   * Get a specific service instances, or get all serivices
+   * 
+   * @param {any} [serviceName=undefined]
+   * @returns
+   * 
+   * @memberOf DiscovererClient
+   */
+  getServiceInfo(serviceName = undefined) {
+    return serviceName ? this._cacheServicesInstances()[serviceName] : this._cacheServicesInstances();
+  }
+
+  /**
+   * cache or get cached servicesInstances
+   * 
+   * @param {Object} [servicesInstances=undefined]
+   * @returns
+   * 
+   * @memberOf DiscovererClient
+   */
+  _cacheServicesInstances(servicesInstances = undefined) {
+    this._servicesCache = servicesInstances || this._servicesCache;
+    return this._servicesCache
+  }
+
+  _registe(done) {
     const option = {
       url: this.REGISTE_URL,
       method: "POST",
       json: true,
-      body: this.getThisServiceInstanceInfo()
+      body: this.getThisClientInfo()
     }
     request(option, (err, req, body) => {
       if (err) throw err;
       // refresh intanceId
-      this.instanceId = body.registed.instanceId;
-      this.startHeartBreak();
-      done(body);
+      this._instanceId = body.registed.instanceId;
+      this._instanceIp = body.registed.instanceIp;
+      this._startHeartBreak();
+      done(body.registed);
     })
   }
 
-  unregiste(done) {
+  _unregiste(done) {
     const option = {
       url: this.UNREGISTE_URL,
       method: "DELETE",
       json: true,
-      body: this.getThisServiceInstanceInfo()
+      body: this.getThisClientInfo()
     }
     request(option, (err, req, body) => {
       if (err) throw err
-      done(body);
+      done(body.unregisted);
     })
 
   }
 
-  clients(done) {
+  _clients(done) {
     const option = {
       url: this.CLIENTS_URL,
       method: "GET",
       json: true,
-      body: this.getThisServiceInstanceInfo()
+      body: this.getThisClientInfo()
     }
     request(option, (err, req, body) => {
       if (err) throw err;
-      done(body);
+      done(this._cacheServicesInstances(body.services));
     })
   }
 
-  renew(done) {
+  _renew(done) {
     const option = {
       url: this.RENEW_URL,
       method: "PUT",
       json: true,
-      body: this.getThisServiceInstanceInfo()
+      body: this.getThisClientInfo()
     }
     request(option, (err, req, body) => {
       if (err) throw err;
-      done(body);
+      done(body.renewed);
     })
   }
 

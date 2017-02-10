@@ -93,36 +93,42 @@ describe('#discoverer client test', function () {
 
 
   it('should registe success', function (done) {
-    client.registe(function (body) {
-      assert.ok(body.registed.instanceId)
+    client._registe(function (registed) {
+      assert.ok(registed.instanceId)
       assert.ok(client.heartbreak)
       done();
     });
   })
 
   it('should get itself', function (done) {
-    client.clients(function (body) {
-      assert.ok(body.services[client.serviceName][client.instanceId])
+    client._clients(function (services) {
+      assert.ok(services[client.getThisClientInfo().serviceName][client.getThisClientInfo().instanceId])
       done();
     })
   })
 
   it('should renew this instance', function (done) {
-    client.renew(body => {
-      assert.ok(body.renewed);
+    client._renew(renewed => {
+      assert.ok(renewed.instanceId);
       done();
     })
   })
 
+
+  it('test get service info', function () {
+    assert.ok(client.getServiceInfo(client.getThisClientInfo().serviceName)[client.getThisClientInfo().instanceId]);
+  })
+
+
   it('should unregiste this instance', function (done) {
-    client.unregiste(body => {
-      assert.ok(body.unregisted);
+    client._unregiste(unregisted => {
+      assert.ok(unregisted.instanceId);
       done();
     })
   })
 
   it('stop heartBreak', function () {
-    client.stopHeartBreak()
+    client._stopHeartBreak()
   })
 
   it('should stop the discoverer server', function () {

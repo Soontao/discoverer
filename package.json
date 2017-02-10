@@ -1,7 +1,8 @@
 {
   "name": "discoverer",
   "version": "1.0.0",
-  "private": true,
+  "description": "nodejs service discoverer",
+  "main": "discoverer.js",
   "scripts": {
     "start": "node ./server",
     "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
@@ -31,5 +32,11 @@
     "coveralls": "^2.11.16",
     "istanbul": "^0.4.5",
     "mocha-lcov-reporter": "^1.2.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Soontao/discoverer"
+  },
+  "author": "suntao",
+  "license": "MIT"
 }
