@@ -35,7 +35,7 @@ class DiscovererClient {
   }
 
   _startHeartBreak() {
-    this.heartbreak = setInterval(this._renew, this._heartBreakInterval * 1000);
+    this.heartbreak = setInterval(this._renew.bind(this), this._heartBreakInterval * 1000);
     debug(`instance ${this._instanceId} heartbreak started`)
   }
 
@@ -94,7 +94,7 @@ class DiscovererClient {
       this._instanceId = body.registed.instanceId;
       this._instanceIp = body.registed.instanceIp;
       this._startHeartBreak();
-      done(body.registed);
+      if (done) done(body.registed);
     })
   }
 
@@ -107,7 +107,7 @@ class DiscovererClient {
     }
     request(option, (err, req, body) => {
       if (err) throw err
-      done(body.unregisted);
+      if (done) done(body.unregisted);
     })
 
   }
@@ -121,7 +121,7 @@ class DiscovererClient {
     }
     request(option, (err, req, body) => {
       if (err) throw err;
-      done(this._cacheServicesInstances(body.services));
+      if (done) done(this._cacheServicesInstances(body.services));
     })
   }
 
@@ -134,7 +134,7 @@ class DiscovererClient {
     }
     request(option, (err, req, body) => {
       if (err) throw err;
-      done(body.renewed);
+      if (done) done(body.renewed);
     })
   }
 
