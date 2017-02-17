@@ -19,6 +19,13 @@ app.set('json spaces', 2)
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
+// set proxy
+app.set('trust proxy', true)
+
+if (process.env.BASIC_AUTH) {
+  const auth = require('./auth');
+  app.use(auth.authenticate('basic', { session: false }))
+}
 app.use(logger('discoverer:server', 'dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

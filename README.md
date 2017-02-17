@@ -5,3 +5,7 @@
 nodejs service discover
 
 in dev now. document will be wrote later, thanks
+
+- [ ] mongodb storage
+- [ ] if there is not client info when renew, client should
+- [ ] authorize should be more attention
