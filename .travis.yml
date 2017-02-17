@@ -1,4 +1,14 @@
 language: node_js
 node_js:
-- '6.9.2'
-- '7.5.0'
+- '6'
+- '7'
+deploy:
+  provider: cloudfoundry
+  api: https://api.run.pivotal.io
+  username: mrls@live.cn
+  password:
+    secure: Ef7n7wPGdDcGFFerB310YWjCzU8LmBXW0OSoLpMMzoCRgflgXN39JtMWwPYKxDEl3pUZCpqAxPNH3gCuPfbmKOt38TBtfMqEj33znePybl2pTAnwdS8yTbLIv/3o19SLOLaFba+fqtuFP6xwCoyVtzNGsaHsh688n5239gRdx6reRjWGA1W/kip3Bma1Xlh4Gw/u1uYJOEI+kbjobco/ZavW6EPRxlEIzw5rOdypht8Otnt6PX5n3MLCCmAOOhssSx0awAdK1YBu6+OC+TeFccrpeRVbHbozzKro3Z8q8WkN0jNQ3VKWhgUwnuVstpbGYkbqJxUDQbnGhlGYKFHmG8EwBlnt1Q6+jWsKjLBRPZXWHwURjy5YZySSodTL+0uL4QCln6ad3FnaJTu4DxuzyefluGZ7XHxxkFmeFtCsI7jQ6iHVXcRatziTfAlBfZ2u5yMpEfrrcAHs/TYDHpVwEwU4R+wfHDe4GqvheXZ3TFVN7878TiNj4Ef/eVEwttJNquhnHYDiYaDHE21HSHcVDFkighRpoWoOfMqzGMI3p8+EnhacZnnSjtzZP3B/q7FvdoCQXwVWogvm/VF5GSH1h98Gk2pB1HsSZrrjCbEiQpGm4OAsSirWWv9IIYGMnCFiYGGI+3CiyaGqkZp+LpvoBSpPZtVmpRr4StDAd1vZqBY=
+  organization: mrls-org
+  space: development
+  on:
+    repo: Soontao/discoverer

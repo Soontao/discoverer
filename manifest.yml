@@ -1,0 +1,10 @@
+---
+applications:
+- name: discover
+  random-route: true
+  buildpack: nodejs_buildpack
+  memory: 150M
+  disk_quota: 300M
+  env:
+    DEBUG: discoverer:*
+    BASIC_AUTH: true

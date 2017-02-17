@@ -42,7 +42,7 @@ describe('#discoverer server test', function () {
   it('should get index page', function (done) {
     request.get(`${serverUrl}`, { json: true }, function (err, req, body) {
       if (err) throw err;
-      assert.ok(body['routes'])
+      assert.ok(body['discover_api'])
       done();
     })
   })
