@@ -1,9 +1,9 @@
-// store info in map
 const services = {};
 const debug = require('debug')('discoverer:store');
 const forEach = require('lodash').forEach;
 const uuid = require('uuid');
 const size = require('lodash').size
+const ServiceInstanceModel = require('../data/ServiceInstanceSchema').ServiceInstanceModel;
 
 
 
@@ -75,16 +75,10 @@ function instanceIsExisted(instanceInfo) {
  * 
  * @returns {void}
  */
-function addInstance(originInfo) {
-  let instanceInfo = ServiceInstanceInfo(originInfo);
+function* addInstance(originInfo) {
+  let instanceInfo = new ServiceInstanceModel(originInfo);
   // if service node not exist,create the node
-  if (!services[instanceInfo.serviceName])
-    services[instanceInfo.serviceName] = {};
-  if (!services[instanceInfo.serviceName][instanceInfo.instanceId]) {
-    services[instanceInfo.serviceName][instanceInfo.instanceId] = instanceInfo;
-    return instanceInfo
-  } else
-    throw new Error(`Instance from ${instanceInfo.instanceId} has been registered before, use other api to refresh`);
+  return yield instanceInfo.save()
 }
 
 /**
@@ -109,7 +103,7 @@ function updateInstance(originInfo) {
 function deleteInstance(originInfo) {
   let instanceInfo = ServiceInstanceInfo(originInfo);
   if (instanceIsExisted(instanceInfo)) {
-    delete (services[instanceInfo.serviceName][instanceInfo.instanceId])
+    delete(services[instanceInfo.serviceName][instanceInfo.instanceId])
     debug(`removed instance ${instanceInfo.instanceId} from registry`)
     if (size(services[instanceInfo.serviceName]) == 0) {
       delete services[instanceInfo.serviceName];

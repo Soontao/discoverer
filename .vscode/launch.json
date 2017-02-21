@@ -11,7 +11,8 @@
       "cwd": "${workspaceRoot}",
       "env": {
         "NODE_ENV": "producton",
-        "DEBUG": "discoverer:*"
+        "DEBUG": "discoverer:*",
+        "CONNECT_URI": "mongodb://discoverer:password@ds157469.mlab.com:57469/discoverer"
       }
     },
     {
