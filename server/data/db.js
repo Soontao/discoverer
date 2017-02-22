@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
-const connect_uri = process.env.CONNECT_URI || process.env.VCAP_SERVICES && JSON.parse(process.env.VCAP_SERVICES).mlab[0].credentials.uri;
+const config = require('../lib/config');
+const connect_uri = config.mongo_connect_uri;
 const ServiceInstanceSchema = require('./ServiceInstanceSchema').ServiceInstanceSchema;
 const debug = require('debug')('discoverer:db')
+
+require('./check_expired');
 
 mongoose.Promise = global.Promise;
 

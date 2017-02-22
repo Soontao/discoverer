@@ -7,7 +7,9 @@ nodejs service discover
 in dev now. document will be wrote later, thanks
 
 - [x] mongodb storage
-- [ ] if there is not client info when renew, client should registe
-- [ ] authorize should be more attention
-- [ ] center config file
+- [ ] move operate to service layer
+- [ ] add log
+- [x] if there is not client info when renew, server should registe
+- [ ] authorize should be more attention, 80%
+- [ ] center config file, 90%
 - [ ] server side health check

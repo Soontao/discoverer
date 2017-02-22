@@ -5,6 +5,7 @@ const logger = require('morgan-debug');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const db = require('./data/db');
+const config = require('./lib/config')
 
 // routes
 const homeRouter = require('./routes/root');
@@ -23,10 +24,8 @@ app.set('view engine', 'hbs');
 // set proxy
 app.set('trust proxy', true)
 
-if (process.env.USE_BASIC_AUTH) {
-  const auth = require('./auth');
-  app.use(auth)
-}
+if (config.use_basic_auth)
+  app.use(require('./lib/auth'))
 
 app.locals.db = db;
 

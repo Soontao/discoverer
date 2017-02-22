@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ServiceInstanceModel = require('../data/ServiceInstanceSchema').ServiceInstanceModel;
+const check_expired = require('../data/check_expired');
 
 /**
  * if you want to registe a discoverer instance, 
@@ -89,8 +90,8 @@ router.put('/renew', (req, res, next) => {
         instance.renew_expires();
         return instance.save()
       } else {
-        const err = new Error("no such instance");
-        throw err;
+        // if renewed instance are not in db, create it;
+        return ServiceInstanceModel.create(req.body)
       }
     })
     .then(saved => res.json({
@@ -102,14 +103,12 @@ router.put('/renew', (req, res, next) => {
 });
 
 router.all('/check_expired', req => {
-  ServiceInstanceModel
-    .find({ expires: { $lte: new Date() } })
-    .then(expired_instances => Promise.all(expired_instances.map(instance => instance.remove())))
+  check_expired()
     .then(removeds => req.res.json({
       'api': 'remove expired service instances',
       'removedCount': removeds && removeds.length
     }))
     .catch(err => next(err));
-})
+});
 
 module.exports = router;

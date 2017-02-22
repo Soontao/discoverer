@@ -109,7 +109,9 @@ class DiscovererClient {
     }
     request(option, (err, req, body) => {
       if (err) throw err;
-      if (done) done(body.renewed);
+      this._instance_id = body.renewed.instance_id;
+      this._instance_url = body.renewed.instance_url;
+      done && done(body.renewed);
     })
   }
 

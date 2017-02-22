@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-var app = require('./app');
-var debug = require('debug')('discoverer:server');
+var logger = require('./lib/logger')("server");
 var http = require('http');
 
 /**
@@ -11,22 +10,23 @@ var http = require('http');
 class DiscovererServer {
 
   constructor(host = '0.0.0.0', port = parseInt(process.env.PORT) || 3999) {
-    this.host = host;
-    this.port = port;
-    app.set('port', port);
-    this.server = http.createServer(app);
-    this.server.on('error', this.onError);
-    this.server.on('listening', this.onListening);
+    this._host = host;
+    this._port = port;
+    this._app = require('./app');
+    this._app.set('port', port);
+    this._server = http.createServer(this._app);
+    this._server.on('error', this.onError.bind(this));
+    this._server.on('listening', this.onListening.bind(this));
   }
 
   start(done) {
-    this.server.listen(this.port, this.host, function() {
+    this._server.listen(this._port, this._host, function() {
       done && done();
     });
   }
 
   stop() {
-    this.server.close();
+    this._server.close();
   }
 
   onError(error) {
@@ -37,8 +37,8 @@ class DiscovererServer {
   }
 
   onListening() {
-    const addr = this.address();
-    debug(`Listen on port :${addr.port}, in ${app.settings.env}`)
+    const addr = this._server.address();
+    logger(`Listen on port :${addr.port}, in ${this._app.settings.env}`)
   }
 
 
