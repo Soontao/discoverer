@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const connect_uri = process.env.CONNECT_URI || JSON.parse(process.env.VCAP_SERVICES).mlab[0].credentials.uri
+const connect_uri = process.env.CONNECT_URI || process.env.VCAP_SERVICES && JSON.parse(process.env.VCAP_SERVICES).mlab[0].credentials.uri;
 const ServiceInstanceSchema = require('./ServiceInstanceSchema').ServiceInstanceSchema;
 const debug = require('debug')('discoverer:db')
 

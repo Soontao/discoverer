@@ -8,15 +8,16 @@ const ServiceInstanceModel = require('../data/ServiceInstanceSchema').ServiceIns
  */
 router.all('/*', (req, res, next) => {
   // only get method not need param check
-  if (req.method.toLowerCase() == 'get' || 'delete') {
+  if (['get', 'delete'].indexOf(req.method.toLowerCase()) > -1) {
     next();
     return;
   }
   // if param not enough
   if (!req.body.service_name) {
-    const err = new Error("you have to give out the name of service")
+    const err = new Error("you have to give out the service_name")
     err.status = 400;
     next(err);
+    return;
   }
   // if client not give the ip, server will detect the client ip
   req.body.instance_url = req.body.instance_url || `http://${req.ip}`;
@@ -48,18 +49,21 @@ router.delete('/unregiste', (req, res, next) => {
 
 router.get('/services', (req, res, next) => {
   ServiceInstanceModel.aggregate({
-    $group: {
-      _id: null,
-      service_name: {
-        $max: "$service_name"
-      },
-      instance_count: {
-        "$sum": 1
+      $group: {
+        _id: null,
+        service_name: {
+          $max: "$service_name"
+        },
+        instance_count: {
+          "$sum": 1
+        }
       }
-    }
-  })
+    })
     .exec()
-    .then(result => res.json(result))
+    .then(result => res.json({
+      "api": "all service type",
+      "services": result
+    }))
     .catch(err => next(err))
 })
 
@@ -68,7 +72,7 @@ router.get('/clients', (req, res, next) => {
     .then(clients => {
       res.json({
         'api': 'get active services clients with param',
-        'services': clients
+        'instances': clients
       })
     })
     .catch(err => {

@@ -10,3 +10,4 @@ in dev now. document will be wrote later, thanks
 - [ ] if there is not client info when renew, client should registe
 - [ ] authorize should be more attention
 - [ ] center config file
+- [ ] server side health check

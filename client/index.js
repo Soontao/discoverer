@@ -20,17 +20,18 @@ class DiscovererClient {
    * 
    * @memberOf DiscovererClient
    */
-  constructor(server_url = 'http://127.0.0.1:3999', service_name = 'nullService', instance_url = undefined, instancePort = 80, instanceId = undefined, heartBreakInterval = 15) {
+  constructor(server_url = 'http://127.0.0.1:3999', service_name = 'nullService', instance_url = undefined, instancePort = 80, instance_id = undefined, heartBreakInterval = 15) {
     this._server_url = server_url;
     this._service_name = service_name;
     this._instance_url = instance_url;
-    this._instance_id = instanceId;
+    this._instance_id = instance_id;
     this._heartBreakInterval = heartBreakInterval;
     this._servicesCache = {};
     this.REGISTE_URL = `${this._server_url}/discoverer/registe`;
     this.RENEW_URL = `${this._server_url}/discoverer/renew`;
     this.UNREGISTE_URL = `${this._server_url}/discoverer/unregiste`;
     this.CLIENTS_URL = `${this._server_url}/discoverer/clients`;
+    this.SERVICES_URL = `${this._server_url}/discoverer/services`;
   }
 
   _startHeartBreak() {
@@ -53,31 +54,6 @@ class DiscovererClient {
     }
   }
 
-
-  /**
-   * Get a specific service instances, or get all serivices
-   * 
-   * @param {any} [serviceName=undefined]
-   * @returns
-   * 
-   * @memberOf DiscovererClient
-   */
-  getServiceInfo(serviceName = undefined) {
-    return serviceName ? this._cacheServicesInstances()[serviceName] : this._cacheServicesInstances();
-  }
-
-  /**
-   * cache or get cached servicesInstances
-   * 
-   * @param {Object} [servicesInstances=undefined]
-   * @returns
-   * 
-   * @memberOf DiscovererClient
-   */
-  _cacheServicesInstances(servicesInstances = undefined) {
-    this._servicesCache = servicesInstances || this._servicesCache;
-    return this._servicesCache
-  }
 
   _registe(done) {
     const option = {
@@ -120,7 +96,7 @@ class DiscovererClient {
     if (opts) option.qs = opts;
     request(option, (err, req, body) => {
       if (err) throw err;
-      if (done) done(this._cacheServicesInstances(body.services));
+      if (done) done(body.instances);
     })
   }
 

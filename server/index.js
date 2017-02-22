@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 var app = require('./app');
 var debug = require('debug')('discoverer:server');
 var http = require('http');
@@ -8,7 +9,7 @@ var http = require('http');
  * 
  */
 class DiscovererServer {
-  
+
   constructor(host = '0.0.0.0', port = parseInt(process.env.PORT) || 3999) {
     this.host = host;
     this.port = port;
@@ -19,7 +20,7 @@ class DiscovererServer {
   }
 
   start(done) {
-    this.server.listen(this.port, this.host, function () {
+    this.server.listen(this.port, this.host, function() {
       done && done();
     });
   }
@@ -36,10 +37,7 @@ class DiscovererServer {
   }
 
   onListening() {
-    var addr = this.address();
-    var bind = typeof addr === 'string' ?
-      'pipe ' + addr :
-      'port ' + addr.port;
+    const addr = this.address();
     debug(`Listen on port :${addr.port}, in ${app.settings.env}`)
   }
 
