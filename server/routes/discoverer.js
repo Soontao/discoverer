@@ -13,15 +13,13 @@ router.all('/*', (req, res, next) => {
     return;
   }
   // if param not enough
-  if (!req.body.instancePort || !req.body.serviceName) {
-    res.status(400).json({
-      error: "param error",
-      message: "you have to give out the name of service, and the port of the instance that will be registed"
-    });
-    return;
+  if (!req.body.service_name) {
+    const err = new Error("you have to give out the name of service")
+    err.status = 400;
+    next(err);
   }
   // if client not give the ip, server will detect the client ip
-  req.body.instanceIp = req.body.instanceIp || req.ip;
+  req.body.instance_url = req.body.instance_url || `http://${req.ip}`;
   next();
 })
 
@@ -48,11 +46,28 @@ router.delete('/unregiste', (req, res, next) => {
     });
 });
 
+router.get('/services', (req, res, next) => {
+  ServiceInstanceModel.aggregate({
+    $group: {
+      _id: null,
+      service_name: {
+        $max: "$service_name"
+      },
+      instance_count: {
+        "$sum": 1
+      }
+    }
+  })
+    .exec()
+    .then(result => res.json(result))
+    .catch(err => next(err))
+})
+
 router.get('/clients', (req, res, next) => {
-  ServiceInstanceModel.find()
+  ServiceInstanceModel.find(req.query)
     .then(clients => {
       res.json({
-        'api': 'get all active services clients',
+        'api': 'get active services clients with param',
         'services': clients
       })
     })
@@ -64,31 +79,32 @@ router.get('/clients', (req, res, next) => {
 router.put('/renew', (req, res, next) => {
   // just more time
   ServiceInstanceModel
-    .findOne({ instanceId: req.body.instanceId })
+    .findOne({ instance_id: req.body.instance_id })
     .then(instance => {
-      instance.renew_expires();
-      return instance.save()
+      if (instance) {
+        instance.renew_expires();
+        return instance.save()
+      } else {
+        const err = new Error("no such instance");
+        throw err;
+      }
     })
     .then(saved => res.json({
       'api': 'renew a instance',
-      'renewd': saved
+      'renewed': saved
     }))
     .catch(err => next(err));
 
 });
 
-router.all('/checkExpired', req => {
+router.all('/check_expired', req => {
   ServiceInstanceModel
     .find({ expires: { $lte: new Date() } })
-    .then(expired_instances => {
-      Promise.all(expired_instances.map(instance => instance.remove()))
-        .then(removeds => {
-          req.res.json({
-            'api': 'remove expired service instances',
-            'removedCount': removeds.length
-          })
-        })
-    })
+    .then(expired_instances => Promise.all(expired_instances.map(instance => instance.remove())))
+    .then(removeds => req.res.json({
+      'api': 'remove expired service instances',
+      'removedCount': removeds && removeds.length
+    }))
     .catch(err => next(err));
 })
 

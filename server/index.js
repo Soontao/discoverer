@@ -9,7 +9,7 @@ var http = require('http');
  */
 class DiscovererServer {
   
-  constructor(host = '0.0.0.0', port = parseInt(process.env.PORT) || 3000) {
+  constructor(host = '0.0.0.0', port = parseInt(process.env.PORT) || 3999) {
     this.host = host;
     this.port = port;
     app.set('port', port);

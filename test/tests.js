@@ -4,7 +4,7 @@ const DiscovererServer = require('../server');
 const request = require('request');
 const uuid = require('uuid');
 
-describe('#discoverer server test', function() {
+describe('#discoverer server test', function () {
 
 
   this.timeout(0);
@@ -20,121 +20,113 @@ describe('#discoverer server test', function() {
   const discovererUrl = `http://${listenHost}:${listenPort}/discoverer`
 
   let testService = {
-    instancePort: 80,
-    serviceName: `testService-${uuid()}`,
-    instanceId: uuid()
+    service_name: `testService-${uuid()}`,
+    instance_id: uuid()
   }
 
-  process.env['CONNECT_URI'] = "mongodb://discoverer:password@ds157469.mlab.com:57469/discoverer";
-
-  it('start test server', function(done) {
+  it('start test server', function (done) {
     server.start(() => {
       done();
     });
   })
 
-  it('should throw 404 error', function(done) {
+  it('should throw 404 error', function (done) {
     request.get(`${discovererUrl}/not-exist/${uuid()}`, {
       json: true
-    }, function(err, req, body) {
+    }, function (err, req, body) {
       if (err) throw err;
       assert.ok(body.status = 404);
       done();
     })
   })
 
-  it('should get index page', function(done) {
-    request.get(`${serverUrl}`, { json: true }, function(err, req, body) {
+  it('should get index page', function (done) {
+    request.get(`${serverUrl}`, { json: true }, function (err, req, body) {
       if (err) throw err;
       assert.ok(body['discover_api'])
       done();
     })
   })
 
-  it('should registe a client', function(done) {
-    request.post(`${discovererUrl}/registe`, { json: true, body: testService }, function(err, req, body) {
+  it('should registe a client', function (done) {
+    request.post(`${discovererUrl}/registe`, { json: true, body: testService }, function (err, req, body) {
       if (err) throw err;
       assert.ok(body);
-      assert.equal(body.registed.serviceName, testService.serviceName)
+      assert.equal(body.registed.service_name, testService.service_name)
       done();
     })
   })
 
-  it('should see itself', function(done) {
-    request.get(`${discovererUrl}/clients`, { json: true }, function(err, req, body) {
+  it('should see itself', function (done) {
+    request.get(`${discovererUrl}/clients`, { json: true }, function (err, req, body) {
       if (err) throw err;
       assert.ok(body.services);
       done();
     })
   })
 
-  it('should check expired and remove expired instances', function(done) {
-    request.get(`${discovererUrl}/checkExpired`, { json: true }, function(err, req, body) {
+  it('should check expired and remove expired instances', function (done) {
+    request.get(`${discovererUrl}/check_expired`, { json: true }, function (err, req, body) {
       if (err) throw err;
       assert.ok(body.removedCount >= 0);
       done();
     })
   })
 
-  it('should stop the discoverer server', function() {
+  it('should stop the discoverer server', function () {
     server.stop();
   })
 
 })
 
 
-describe('#discoverer client test', function() {
+describe('#discoverer client test', function () {
   // disable timeout
   this.timeout(0);
   const server = new DiscovererServer();
   const client = new DiscovererClient();
 
-  it('start discoverer server', function(done) {
+  it('start discoverer server', function (done) {
     server.start(() => {
       done();
     });
   })
 
 
-  it('should registe success', function(done) {
-    client._registe(function(registed) {
-      assert.ok(registed.instanceId)
+  it('should registe success', function (done) {
+    client._registe(function (registed) {
+      assert.ok(registed.instance_id)
       assert.ok(client.heartbreak)
       done();
     });
   })
 
-  // it('should get itself', function(done) {
-  //   client._clients(function(services) {
-  //     assert.ok(services[client.getThisClientInfo().serviceName][client.getThisClientInfo().instanceId])
-  //     done();
-  //   })
-  // })
+  it('should get itself', function (done) {
+    client._clients(client.getThisClientInfo(), function (instance) {
+      assert.ok(instance)
+      done();
+    })
+  })
 
-  // it('should renew this instance', function(done) {
-  //   client._renew(renewed => {
-  //     assert.ok(renewed.instanceId);
-  //     done();
-  //   })
-  // })
+  it('should renew this instance', function (done) {
+    client._renew(renewed => {
+      assert.ok(renewed.instance_id);
+      done();
+    })
+  })
 
-  // it('test get service info', function() {
-  //   assert.ok(client.getServiceInfo(client.getThisClientInfo().serviceName)[client.getThisClientInfo().instanceId]);
-  // })
+  it('should unregiste this instance', function(done) {
+    client._unregiste(unregisted => {
+      assert.ok(unregisted);
+      done();
+    })
+  })
 
-
-  // it('should unregiste this instance', function(done) {
-  //   client._unregiste(unregisted => {
-  //     assert.ok(unregisted.instanceId);
-  //     done();
-  //   })
-  // })
-
-  it('stop heartBreak', function() {
+  it('stop heartBreak', function () {
     client._stopHeartBreak()
   })
 
-  it('should stop the discoverer server', function() {
+  it('should stop the discoverer server', function () {
     server.stop();
   })
 

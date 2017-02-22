@@ -20,38 +20,36 @@ class DiscovererClient {
    * 
    * @memberOf DiscovererClient
    */
-  constructor(serverUrl = 'http://127.0.0.1:3000', serviceName = 'nullService', instanceIp = undefined, instancePort = 80, instanceId = undefined, heartBreakInterval = 15) {
-    this._serverUrl = serverUrl;
-    this._serviceName = serviceName;
-    this._instanceIp = instanceIp;
-    this._instancePort = instancePort;
-    this._instanceId = instanceId;
+  constructor(server_url = 'http://127.0.0.1:3999', service_name = 'nullService', instance_url = undefined, instancePort = 80, instanceId = undefined, heartBreakInterval = 15) {
+    this._server_url = server_url;
+    this._service_name = service_name;
+    this._instance_url = instance_url;
+    this._instance_id = instanceId;
     this._heartBreakInterval = heartBreakInterval;
     this._servicesCache = {};
-    this.REGISTE_URL = `${this._serverUrl}/discoverer/registe`;
-    this.RENEW_URL = `${this._serverUrl}/discoverer/renew`;
-    this.UNREGISTE_URL = `${this._serverUrl}/discoverer/unregiste`;
-    this.CLIENTS_URL = `${this._serverUrl}/discoverer/clients`;
+    this.REGISTE_URL = `${this._server_url}/discoverer/registe`;
+    this.RENEW_URL = `${this._server_url}/discoverer/renew`;
+    this.UNREGISTE_URL = `${this._server_url}/discoverer/unregiste`;
+    this.CLIENTS_URL = `${this._server_url}/discoverer/clients`;
   }
 
   _startHeartBreak() {
     this.heartbreak = setInterval(this._renew.bind(this), this._heartBreakInterval * 1000);
-    debug(`instance ${this._instanceId} heartbreak started`)
+    debug(`instance ${this._instance_id} heartbreak started`)
   }
 
   _stopHeartBreak() {
     if (this.heartbreak) {
       clearInterval(this.heartbreak);
-      debug(`instance ${this._instanceId} heartbreak stoped`)
+      debug(`instance ${this._instance_id} heartbreak stoped`)
     }
   }
 
   getThisClientInfo() {
     return {
-      serviceName: this._serviceName,
-      instancePort: this._instancePort,
-      instanceIp: this._instanceIp,
-      instanceId: this._instanceId
+      service_name: this._service_name,
+      instance_url: this._instance_url,
+      instance_id: this._instance_id
     }
   }
 
@@ -91,8 +89,8 @@ class DiscovererClient {
     request(option, (err, req, body) => {
       if (err) throw err;
       // refresh intanceId
-      this._instanceId = body.registed.instanceId;
-      this._instanceIp = body.registed.instanceIp;
+      this._instance_id = body.registed.instance_id;
+      this._instance_url = body.registed.instance_url;
       this._startHeartBreak();
       if (done) done(body.registed);
     })
@@ -112,13 +110,14 @@ class DiscovererClient {
 
   }
 
-  _clients(done) {
+  _clients(opts, done) {
     const option = {
       url: this.CLIENTS_URL,
       method: "GET",
       json: true,
       body: this.getThisClientInfo()
     }
+    if (opts) option.qs = opts;
     request(option, (err, req, body) => {
       if (err) throw err;
       if (done) done(this._cacheServicesInstances(body.services));

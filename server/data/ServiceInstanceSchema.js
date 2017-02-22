@@ -8,27 +8,23 @@ function dateAfterSeconds(secNum) {
 }
 
 const ServiceInstanceSchema = mongoose.Schema({
-  instanceIp: String,
-  serviceName: String,
-  instancePort: {
-    type: Number,
-    default: 80
-  },
+  instance_url: String,
+  service_name: String,
   expires: {
     type: Date,
     default: dateAfterSeconds
   },
-  instanceId: {
+  instance_id: {
     type: String,
     default: uuid
   }
 });
 
-ServiceInstanceSchema.methods.renew_expires = function(sec) {
+ServiceInstanceSchema.methods.renew_expires = function (sec) {
   this.expires = dateAfterSeconds(sec);
 }
 
-const ServiceInstanceModel = mongoose.model('ServiceInstance', ServiceInstanceSchema);
+const ServiceInstanceModel = mongoose.model('Service_Instance', ServiceInstanceSchema);
 
 module.exports = {
   ServiceInstanceSchema,
