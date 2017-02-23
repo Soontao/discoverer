@@ -1,29 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ServiceInstanceModel = require('../data/ServiceInstanceSchema').ServiceInstanceModel;
-const check_expired = require('../data/check_expired');
-
-/**
- * if you want to registe a discoverer instance, 
- * you should give out your instancePort and serviceName
- */
-router.all('/*', (req, res, next) => {
-  // only get method not need param check
-  if (['get', 'delete'].indexOf(req.method.toLowerCase()) > -1) {
-    next();
-    return;
-  }
-  // if param not enough
-  if (!req.body.service_name) {
-    const err = new Error("you have to give out the service_name")
-    err.status = 400;
-    next(err);
-    return;
-  }
-  // if client not give the ip, server will detect the client ip
-  req.body.instance_url = req.body.instance_url || `http://${req.ip}`;
-  next();
-})
+const check_expired = require('../data/check_expired').remove_expired;
 
 router.post('/registe', (req, res, next) => {
   const model = new ServiceInstanceModel(req.body);
@@ -50,16 +28,16 @@ router.delete('/unregiste', (req, res, next) => {
 
 router.get('/services', (req, res, next) => {
   ServiceInstanceModel.aggregate({
-      $group: {
-        _id: null,
-        service_name: {
-          $max: "$service_name"
-        },
-        instance_count: {
-          "$sum": 1
-        }
+    $group: {
+      _id: null,
+      service_name: {
+        $max: "$service_name"
+      },
+      instance_count: {
+        "$sum": 1
       }
-    })
+    }
+  })
     .exec()
     .then(result => res.json({
       "api": "all service type",

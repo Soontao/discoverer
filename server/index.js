@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-var logger = require('./lib/logger')("server");
-var http = require('http');
+const logger = require('./lib/logger')("server");
+const http = require('http');
+const config = require('./lib/config');
 
 /**
  * 需要为每一个Discoverer节点生成storage
@@ -9,18 +10,18 @@ var http = require('http');
  */
 class DiscovererServer {
 
-  constructor(host = '0.0.0.0', port = parseInt(process.env.PORT) || 3999) {
+  constructor(host = config.server_listen_host, port = config.server_port) {
     this._host = host;
     this._port = port;
     this._app = require('./app');
-    this._app.set('port', port);
+    this._app.set('port', this._port);
     this._server = http.createServer(this._app);
     this._server.on('error', this.onError.bind(this));
     this._server.on('listening', this.onListening.bind(this));
   }
 
   start(done) {
-    this._server.listen(this._port, this._host, function() {
+    this._server.listen(this._port, this._host, function () {
       done && done();
     });
   }
@@ -38,7 +39,7 @@ class DiscovererServer {
 
   onListening() {
     const addr = this._server.address();
-    logger(`Listen on port :${addr.port}, in ${this._app.settings.env}`)
+    logger(`listen on ${this._host}:${this._port}, in ${this._app.settings.env}`)
   }
 
 

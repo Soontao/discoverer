@@ -1,10 +1,11 @@
 {
   "name": "discoverer",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "nodejs service discoverer",
   "main": "discoverer.js",
   "bin": {
-    "discover": "./server/index.js"
+    "discover-server": "./server/index.js",
+    "discover-client": "./client/index.js"
   },
   "scripts": {
     "start": "node ./server",

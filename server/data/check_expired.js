@@ -1,4 +1,5 @@
 const ServiceInstanceModel = require('./ServiceInstanceSchema').ServiceInstanceModel;
+const config = require('../lib/config');
 const logger = require("../lib/logger")("remove_expired")
 
 const remove_expired = () => {
@@ -12,6 +13,8 @@ const remove_expired = () => {
     })
 }
 
-const check_timer = setInterval(remove_expired, 2 * 1000);
+const check_timer = setInterval(remove_expired, config.expired_check_interval * 1000);
 
-module.exports = remove_expired;
+logger(`start to check expired instance each ${config.expired_check_interval} seconds`)
+
+module.exports = { remove_expired, check_timer };

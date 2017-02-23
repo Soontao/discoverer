@@ -8,8 +8,14 @@ function dateAfterSeconds(secNum) {
 }
 
 const ServiceInstanceSchema = mongoose.Schema({
-  instance_url: String,
-  service_name: String,
+  instance_url: {
+    type: String,
+    required: [true, "instance_url must be defined"]
+  },
+  service_name: {
+    type: String,
+    required: [true, "service_name must be defined"]
+  },
   expires: {
     type: Date,
     default: dateAfterSeconds

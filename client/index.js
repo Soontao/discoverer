@@ -1,6 +1,10 @@
+#!/usr/bin/env node
+
 // discoverer client
 const request = require('request');
 const debug = require('debug')('discoverer:client');
+const config = require('./config');
+
 
 /**
  * DiscovererClient
@@ -20,18 +24,21 @@ class DiscovererClient {
    * 
    * @memberOf DiscovererClient
    */
-  constructor(server_url = 'http://127.0.0.1:3999', service_name = 'nullService', instance_url = undefined, instancePort = 80, instance_id = undefined, heartBreakInterval = 15) {
-    this._server_url = server_url;
-    this._service_name = service_name;
-    this._instance_url = instance_url;
-    this._instance_id = instance_id;
+  constructor(server_url, service_name, instance_url, instance_id, heartBreakInterval = 15) {
+    this._server_url = server_url || config.server_url;
+    this._service_name = service_name || config.service_name;
+    this._instance_url = instance_url || config.instance_url;
+    this._instance_id = instance_id || config.instance_id;
     this._heartBreakInterval = heartBreakInterval;
-    this._servicesCache = {};
-    this.REGISTE_URL = `${this._server_url}/discoverer/registe`;
-    this.RENEW_URL = `${this._server_url}/discoverer/renew`;
-    this.UNREGISTE_URL = `${this._server_url}/discoverer/unregiste`;
-    this.CLIENTS_URL = `${this._server_url}/discoverer/clients`;
-    this.SERVICES_URL = `${this._server_url}/discoverer/services`;
+    this._service_prefix = '/discoverer'
+    this.REGISTE_URL = `${this._server_url}${this._service_prefix}/registe`;
+    this.RENEW_URL = `${this._server_url}${this._service_prefix}/renew`;
+    this.UNREGISTE_URL = `${this._server_url}${this._service_prefix}/unregiste`;
+    this.CLIENTS_URL = `${this._server_url}${this._service_prefix}/clients`;
+    this.SERVICES_URL = `${this._server_url}${this._service_prefix}/services`;
+
+    if (!this._service_name || !this._instance_url)
+      throw new Error("should give out the service_name and this instance url")
   }
 
   _startHeartBreak() {
@@ -64,10 +71,11 @@ class DiscovererClient {
     }
     request(option, (err, req, body) => {
       if (err) throw err;
-      // refresh intanceId
+      // update local intance info
       this._instance_id = body.registed.instance_id;
       this._instance_url = body.registed.instance_url;
       this._startHeartBreak();
+      debug(`registe with info ${JSON.stringify(body, '', ' ')}`)
       if (done) done(body.registed);
     })
   }
@@ -116,5 +124,27 @@ class DiscovererClient {
   }
 
 }
+
+if (require.main === module) {
+  try {
+
+    const client = new DiscovererClient();
+
+    client._registe();
+
+    process.on('SIGINT', function () {
+      debug('Ctrl-C...');
+      process.exit(0);
+    });
+
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+}
+
+
+
+
 
 module.exports = DiscovererClient;
