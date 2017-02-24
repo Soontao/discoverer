@@ -10,7 +10,10 @@ in dev now. document will be wrote later, thanks
 - [x] move operate to service layer, [cancel]
 - [ ] add log
 - [x] client cli
+- [x] client default url is ip
+- [x] promisefy discoverer client
+- [ ] api client, load balance, round method
 - [x] if there is not client info when renew, server should registe
-- [ ] authorize should be more attention, 80%
+- [x] authorize should be more attention
 - [x] center config file
 - [ ] server side health check

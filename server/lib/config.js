@@ -18,9 +18,15 @@ const http_basic_password = process.env.HTTP_BASIC_PASSWORD || rand_str.generate
 /**
  * mongodb connect uri
  */
-const mongo_connect_uri =
-  process.env.CONNECT_URI ||
-  (process.env.VCAP_SERVICES && JSON.parse(process.env.VCAP_SERVICES).mlab[0].credentials.uri);
+const mongo_connect_uri
+  =
+  process.env.CONNECT_URI
+  // or
+  ||
+  (process.env.VCAP_SERVICES && JSON.parse(process.env.VCAP_SERVICES).mlab[0].credentials.uri)
+  // or
+  ||
+  "mongodb://localhost/discoverer";
 
 const server_port = process.env.PORT || 3999;
 
