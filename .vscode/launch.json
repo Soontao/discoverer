@@ -12,7 +12,7 @@
       "env": {
         "NODE_ENV": "producton",
         "DEBUG": "discoverer:*",
-        "CONNECT_URI": "mongodb://localhost/discoverer"
+        "CONNECT_URI": "mongodb://192.168.0.100/discoverer"
       }
     },
     {

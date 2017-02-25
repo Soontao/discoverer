@@ -4,7 +4,7 @@ const DiscovererServer = require('../server');
 const request = require('request');
 const uuid = require('uuid');
 
-describe('#discoverer client test', function () {
+describe('#DiscovererClient Tests', function () {
   // disable timeout
   this.timeout(0);
   const server = new DiscovererServer();

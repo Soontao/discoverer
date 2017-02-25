@@ -5,6 +5,7 @@ const request = require('request');
 const debug = require('debug')('discoverer:client');
 const config = require('./config');
 const rp = require('request-promise');
+const ApiClient = require('./apiclient');
 
 
 /**
@@ -82,11 +83,11 @@ class DiscovererClient {
 
   _unregiste() {
     return rp({
-      url: this.UNREGISTE_URL,
-      method: "DELETE",
-      json: true,
-      body: this.getThisClientInfo()
-    })
+        url: this.UNREGISTE_URL,
+        method: "DELETE",
+        json: true,
+        body: this.getThisClientInfo()
+      })
       .then(body => body.unregisted)
       .catch(err => {
         if (err) throw err;
@@ -109,6 +110,10 @@ class DiscovererClient {
       })
   }
 
+  create_api_of(service_name) {
+    return new ApiClient(service_name, this)
+  }
+
   _renew() {
     const option = {
       url: this.RENEW_URL,
@@ -125,6 +130,10 @@ class DiscovererClient {
       .catch(err => {
         if (err) throw err;
       })
+  }
+
+  stop() {
+    this._stopHeartBreak();
   }
 
 }

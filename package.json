@@ -1,6 +1,6 @@
 {
   "name": "discoverer",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "nodejs service discoverer",
   "main": "discoverer.js",
   "bin": {
@@ -47,6 +47,6 @@
     "type": "git",
     "url": "git+https://github.com/Soontao/discoverer"
   },
-  "author": "suntao",
+  "author": "Theo Sun",
   "license": "MIT"
 }

@@ -14,10 +14,9 @@ const service_name = process.env.C_SERVICE_NAME || os.hostname();
 /**
  * the url can be accessed from outside
  */
-const instance_url
-  = process.env.C_INSTANCE_URL
-  || (process.env.VCAP_SERVICES && JSON.parse(process.env.VCAP_APPLICATION).uris[0])
-  || `http://${ip.address()}`;
+const instance_url = process.env.C_INSTANCE_URL ||
+  (process.env.VCAP_SERVICES && `https://${JSON.parse(process.env.VCAP_APPLICATION).uris[0]}`) ||
+  `http://${ip.address()}`;
 
 /**
  * this instance id

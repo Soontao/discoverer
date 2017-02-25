@@ -24,6 +24,8 @@ const ServiceInstanceSchema = mongoose.Schema({
     type: String,
     default: uuid
   }
+}, {
+  versionKey: false
 });
 
 ServiceInstanceSchema.methods.renew_expires = function (sec) {

@@ -7,7 +7,6 @@ class ApiClient {
     this._discover_client = discover_client;
     this._service_name = service_name;
     this._instance_index = 0;
-    this._init = false;
   }
 
   set_instances(instances) {
@@ -25,7 +24,9 @@ class ApiClient {
 
   refresh_instances() {
     return this._discover_client
-      ._clients(this._service_name)
+      ._clients({
+        service_name: this._service_name
+      })
       .then(instances => {
         this.set_instances(instances)
         return instances;
@@ -36,13 +37,19 @@ class ApiClient {
   }
 
   request(path, option) {
-    const currnet_instance = this.get_instances()[this._instance_index % this._instances_num];
-    const uri = `${currnet_instance.instance_url}/${path}`;
-    this._instance_index += 1;
-    return rp(uri, option)
-      .catch(err => {
-        if (err) throw err
-      });
+    return this
+      .get_instances()
+      .then(instances => {
+        const currnet_instance = instances[this._instance_index % this._instances_num];
+        const uri = `${currnet_instance.instance_url}/${path}`;
+        this._instance_index += 1;
+        return rp(uri, option)
+          .catch(err => {
+            if (err) throw err
+          });
+      })
+
+
   }
 }
 

@@ -12,7 +12,8 @@ in dev now. document will be wrote later, thanks
 - [x] client cli
 - [x] client default url is ip
 - [x] promisefy discoverer client
-- [ ] api client, load balance, round method
+- [x] api client, load balance, round method
+- [ ] need a switch to adapt a client just want to consume services
 - [x] if there is not client info when renew, server should registe
 - [x] authorize should be more attention
 - [x] center config file
