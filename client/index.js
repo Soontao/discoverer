@@ -111,7 +111,9 @@ class DiscovererClient {
   }
 
   create_api_of(service_name) {
-    return new ApiClient(service_name, this)
+    const api_client = new ApiClient(service_name, this);
+    api_client.refresh_instances();
+    return api_client;
   }
 
   _renew() {

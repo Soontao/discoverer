@@ -1,5 +1,7 @@
 const rand_str = require("randomstring");
 
+const vcap_services = process.env.VCAP_SERVICES && JSON.parse(process.env.VCAP_SERVICES);
+
 /**
  * use http basic auth or not
  */
@@ -18,12 +20,11 @@ const http_basic_password = process.env.HTTP_BASIC_PASSWORD || rand_str.generate
 /**
  * mongodb connect uri
  */
-const mongo_connect_uri
-  =
+const mongo_connect_uri =
   process.env.CONNECT_URI
   // or
   ||
-  (process.env.VCAP_SERVICES && JSON.parse(process.env.VCAP_SERVICES).mlab[0].credentials.uri)
+  (vcap_services && vcap_services.mlab && vcap_services.mlab[0].credentials.uri)
   // or
   ||
   "mongodb://localhost/discoverer";

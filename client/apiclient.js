@@ -16,7 +16,9 @@ class ApiClient {
 
   get_instances() {
     if (this._instances) {
-      return then => this.instances;
+      return new Promise((resolve, reject) => {
+        resolve(this._instances);
+      });
     } else {
       return this.refresh_instances()
     }

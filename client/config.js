@@ -1,6 +1,8 @@
 const ip = require('ip');
 const os = require('os');
 
+const vcap_application = process.env.VCAP_APPLICATION && JSON.parse(process.env.VCAP_APPLICATION)
+
 /**
  * the discoverer server link
  */
@@ -9,13 +11,15 @@ const server_url = process.env.C_SERVER_URL || "http://127.0.0.1:3999";
 /**
  * this service name
  */
-const service_name = process.env.C_SERVICE_NAME || os.hostname();
+const service_name = process.env.C_SERVICE_NAME ||
+  (vcap_application && vcap_application.application_name) ||
+  os.hostname();
 
 /**
  * the url can be accessed from outside
  */
 const instance_url = process.env.C_INSTANCE_URL ||
-  (process.env.VCAP_SERVICES && `https://${JSON.parse(process.env.VCAP_APPLICATION).uris[0]}`) ||
+  (vcap_application && `https://${vcap_application.uris[0]}`) ||
   `http://${ip.address()}`;
 
 /**
