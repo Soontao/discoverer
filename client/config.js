@@ -30,12 +30,19 @@ const instance_id = process.env.C_INSTANCE_ID;
 /**
  * renew info interval
  */
-const heart_break_interval = parseInt(process.env.C_HEART_BREAK_INTERVAL) || 15
+const heart_break_interval = parseInt(process.env.C_HEART_BREAK_INTERVAL) || 15;
+
+/**
+ * if it true, it will not regite anyway
+ */
+const no_registe = process.env.NO_REGISTE == "true";
+
 
 module.exports = {
   server_url,
   instance_id,
   instance_url,
   service_name,
-  heart_break_interval
+  heart_break_interval,
+  no_registe
 }

@@ -64,21 +64,22 @@ class DiscovererClient {
   }
 
 
-  _registe(done) {
-    return rp({
-      url: this.REGISTE_URL,
-      method: "POST",
-      json: true,
-      body: this.getThisClientInfo()
-    }).then(body => {
-      this._instance_id = body.registed.instance_id;
-      this._instance_url = body.registed.instance_url;
-      this._startHeartBreak();
-      debug(`registe with info ${JSON.stringify(body, '', ' ')}`)
-      return body.registed;
-    }).catch(err => {
-      if (err) throw err;
-    })
+  _registe() {
+    if (!config.no_registe)
+      return rp({
+        url: this.REGISTE_URL,
+        method: "POST",
+        json: true,
+        body: this.getThisClientInfo()
+      }).then(body => {
+        this._instance_id = body.registed.instance_id;
+        this._instance_url = body.registed.instance_url;
+        this._startHeartBreak();
+        debug(`registe with info ${JSON.stringify(body, '', ' ')}`)
+        return body.registed;
+      }).catch(err => {
+        if (err) throw err;
+      })
   }
 
   _unregiste() {

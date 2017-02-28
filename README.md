@@ -13,8 +13,8 @@ in dev now. document will be wrote later, thanks
 - [x] client default url is ip
 - [x] promisefy discoverer client
 - [x] api client, load balance, round method
-- [ ] need a switch to adapt a client just want to consume services
+- [x] need a switch to adapt a client just want to consume services
 - [x] if there is not client info when renew, server should registe
-- [x] authorize should be more attention
+- [x] authorize should be more attention, http basic auth
 - [x] center config file
 - [ ] server side health check
