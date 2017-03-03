@@ -72,6 +72,10 @@ const add = (a, b) => {
     })
 }
 
+// another js file
+add(1,2).then(console.log)
+// out: 3
+
 ```
 
 
@@ -82,19 +86,19 @@ const add = (a, b) => {
 1. USE_BASIC_AUTH, default is false
 1. HTTP_BASIC_USERNAME
 1. HTTP_BASIC_PASSWORD
-1. MONGO_CONNECT_URI, default is mongodb://localhost/discoverer
-1. LISTEN_HOST default is 0.0.0.0
+1. MONGO_CONNECT_URI, **required**, default is mongodb://localhost/discoverer
+1. LISTEN_HOST, default is 0.0.0.0
 1. PORT, default is 3999
-1. CHECK_INTERVAL, default is 2s
+1. CHECK_INTERVAL, default is 2s, 服务器会每隔几秒检测数据库中是否有超时的instance，有的话就会移除记录
 
 ### client
 
-1. C_SERVER_URL, default is http://127.0.0.1:3999
-1. C_SERVICE_NAME
-1. C_INSTANCE_URL, default is hostname
+1. C_SERVER_URL, default is http://127.0.0.1:3999, 如果server配置了http basic auth, 需要在url中指明，例如: http://username:password@discover.example.com
+1. C_SERVICE_NAME, **required**, default is hostname, 服务名非常重要, consumer也是通过这个名称拉取provider列表
+1. C_INSTANCE_URL, **required**, default is http://yourip:80, 这里配置的地址是被外部服务远程调用的地址
 1. C_INSTANCE_ID
 1. C_HEART_BREAK_INTERVAL, default is 15s
-1. NO_REGISTE, default is false
+1. NO_REGISTE, default is false, if set this flag is true, client无论如何都不会注册到服务器，即使显式的调用了_registe方法
 
 ## tasks
 

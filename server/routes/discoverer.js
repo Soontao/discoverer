@@ -15,6 +15,10 @@ router.post('/registe', (req, res, next) => {
     })
 });
 
+/**
+ * there need an api to check the service instance  alive
+ */
+
 router.delete('/unregiste', (req, res, next) => {
   ServiceInstanceModel.remove(req.body)
     .then(removed => res.json({
