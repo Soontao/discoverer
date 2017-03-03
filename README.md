@@ -6,6 +6,98 @@ nodejs service discover
 
 in dev now. document will be wrote later, thanks
 
+## install
+
+```
+npm i discoverer --save
+```
+
+## use server
+
+```javascript
+const DiscovererServer = require('discoverer').DiscovererServer;
+
+const server = new DiscovererServer();
+
+server.start();
+```
+
+## service provider
+
+```javascript
+const restify = require('restify');
+const DiscovererClient = require('discoverer').DiscovererClient;
+
+const listenPort = process.env.PORT || 1234;
+
+const server = restify.createServer();
+
+const discovererClient = new DiscovererClient();
+
+server.use(restify.queryParser());
+
+server.get('/api/v1/add', function (req, res, next) {
+  res.json({
+    sum: parseInt(req.query.a) + parseInt(req.query.b)
+  });
+});
+
+server.listen(listenPort, () => {
+  console.log(`${server.name} listen on ${server.url}`)
+})
+
+discovererClient._registe(info => console.log(info))
+```
+
+## service consumer
+
+```javascript
+const DiscovererClient = require('discoverer').DiscovererClient;
+
+// construct a new Discoverer client
+const discover = new DiscovererClient();
+
+// create a client load balance api client
+const compute_server = discover.create_api_of('add-compute-service');
+
+// wrap a request as a function
+const add = (a, b) => {
+  return compute_server
+    .request(`/api/v1/add?a=${a}&b=${b}`, {
+      json: true
+    })
+    .then(result => result.sum)
+    .catch(err => {
+      throw err;
+    })
+}
+
+```
+
+
+## environment variable
+
+### server
+
+1. USE_BASIC_AUTH, default is false
+1. HTTP_BASIC_USERNAME
+1. HTTP_BASIC_PASSWORD
+1. MONGO_CONNECT_URI, default is mongodb://localhost/discoverer
+1. LISTEN_HOST default is 0.0.0.0
+1. PORT, default is 3999
+1. CHECK_INTERVAL, default is 2s
+
+### client
+
+1. C_SERVER_URL, default is http://127.0.0.1:3999
+1. C_SERVICE_NAME
+1. C_INSTANCE_URL, default is hostname
+1. C_INSTANCE_ID
+1. C_HEART_BREAK_INTERVAL, default is 15s
+1. NO_REGISTE, default is false
+
+## tasks
+
 - [x] mongodb storage
 - [x] move operate to service layer, [cancel]
 - [ ] add log
@@ -18,3 +110,4 @@ in dev now. document will be wrote later, thanks
 - [x] authorize should be more attention, http basic auth
 - [x] center config file
 - [ ] server side health check
+- [ ] when ApiClient catch an exception, should refresh client list

@@ -1,8 +1,22 @@
 const rp = require('request-promise');
 
 
+/**
+ * API Client
+ * 
+ * 在service instances中轮训
+ * 
+ * @class ApiClient
+ */
 class ApiClient {
 
+  /**
+   * Creates an instance of ApiClient.
+   * @param {any} service_name 服务名
+   * @param {DiscovererClient} discover_client 
+   * 
+   * @memberOf ApiClient
+   */
   constructor(service_name, discover_client) {
     this._discover_client = discover_client;
     this._service_name = service_name;
