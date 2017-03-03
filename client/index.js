@@ -38,7 +38,6 @@ class DiscovererClient {
     this.UNREGISTE_URL = `${this._server_url}${this._server_prefix}/unregiste`;
     this.CLIENTS_URL = `${this._server_url}${this._server_prefix}/clients`;
     this.SERVICES_URL = `${this._server_url}${this._server_prefix}/services`;
-    this.cache = new Map();
     if (!this._service_name || !this._instance_url)
       throw new Error("should give out the service_name and this instance url")
   }

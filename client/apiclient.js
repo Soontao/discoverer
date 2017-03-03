@@ -52,6 +52,28 @@ class ApiClient {
       })
   }
 
+  /**
+   * process error
+   * 
+   * @param {Error} err an error
+   * 
+   * @memberOf DiscovererClient
+   */
+  err_process(err) {
+    /**
+     * if error occurs
+     * 
+     * apiclient willremove local cache
+     * 
+     * apiclient should notify server refresh instances
+     * 
+     * so server should add a new api
+     * 
+     */
+  }
+
+
+
   request(path, option) {
     return this
       .get_instances()
