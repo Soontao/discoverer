@@ -99,14 +99,14 @@ add(1,2).then(console.log)
 
 ### client
 
-1. C_SERVER_URL, default is http://127.0.0.1:3999, 如果server配置了http basic auth, 需要在url中指明，例如: http://username:password@discover.example.com
-1. <font color="crimson">C_SERVICE_NAME, **required**, default is hostname, 服务名非常重要, consumer也是通过这个名称拉取provider列表</font>
+1. C_SERVER_URL, default is http://127.0.0.1:3999, 如果server配置了http basic auth, 需要在url中指明，例如: http://discover.example.com
+1. C_AUTH_USER, use to pass the server auth
+1. C_AUTH_PASS, use to pass the server auth
+1. C_SERVICE_NAME, **required**, default is hostname, 服务名非常重要, consumer也是通过这个名称拉取provider列表
 1. C_INSTANCE_URL, **required**, default is http://yourip:80, 这里配置的地址是被外部服务远程调用的地址
 1. C_INSTANCE_ID, if not set, server will give you one
 1. C_HEART_BREAK_INTERVAL, default is 15s
 1. C_NO_REGISTE, default is false, if set this flag is true, client无论如何都不会注册到服务器，即使显式的调用了_registe方法
-1. C_AUTH_USER, use to pass the server auth
-1. C_AUTH_PASS, use to pass the server auth
 
 ## tasks
 
