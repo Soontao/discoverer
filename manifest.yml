@@ -7,6 +7,6 @@ applications:
   disk_quota: 300M
   env:
     DEBUG: discoverer:*
-    USE_BASIC_AUTH: true
-    HTTP_BASIC_USERNAME: username
-    HTTP_BASIC_PASSWORD: password
+    USE_AUTH: true
+    AUTH_USER: username
+    AUTH_PASS: password

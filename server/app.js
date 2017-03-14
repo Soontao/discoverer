@@ -24,7 +24,7 @@ app.set('view engine', 'hbs');
 // set proxy
 app.set('trust proxy', true)
 
-if (config.use_basic_auth)
+if (config.use_auth)
   app.use(require('./lib/auth'))
 
 app.locals.db = db;

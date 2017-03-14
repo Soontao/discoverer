@@ -1,7 +1,14 @@
 const assert = require("assert");
 const DiscovererClient = require('../client');
 const DiscovererServer = require('../server');
-const request = require('request');
+const request = require('request').defaults({
+  json: true,
+  auth: {
+    username: process.env.C_AUTH_USER,
+    password: process.env.C_AUTH_PASS,
+    sendImmediately: false
+  }
+});
 const uuid = require('uuid');
 
 describe('#DiscovererServer Tests', function () {

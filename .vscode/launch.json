@@ -3,7 +3,8 @@
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
-  "configurations": [{
+  "configurations": [
+    {
       "type": "node",
       "request": "launch",
       "name": "启动程序",
@@ -11,8 +12,10 @@
       "cwd": "${workspaceRoot}",
       "env": {
         "NODE_ENV": "producton",
+        "USE_AUTH": "true",
         "DEBUG": "discoverer:*",
-        "CONNECT_URI": "mongodb://192.168.0.100/discoverer"
+        "AUTH_USER": "u",
+        "AUTH_PASS": "o"
       }
     },
     {

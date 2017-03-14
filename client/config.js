@@ -35,8 +35,11 @@ const heart_break_interval = parseInt(process.env.C_HEART_BREAK_INTERVAL) || 15;
 /**
  * if it true, it will not regite anyway
  */
-const no_registe = process.env.NO_REGISTE == "true";
+const no_registe = process.env.C_NO_REGISTE == "true";
 
+const auth_username = process.env.C_AUTH_USER || undefined;
+
+const auth_password = process.env.C_AUTH_PASS || undefined;
 
 module.exports = {
   server_url,
@@ -44,5 +47,7 @@ module.exports = {
   instance_url,
   service_name,
   heart_break_interval,
-  no_registe
+  no_registe,
+  auth_password,
+  auth_username
 }
