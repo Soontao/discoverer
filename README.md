@@ -6,9 +6,9 @@ nodejs service discover
 
 in dev now. document will be wrote later, thanks
 
-## arch
+## Architecture
 
-![arch](https://res.cloudinary.com/digf90pwi/image/upload/v1489461859/discoverer_2_bjrdf7.png)
+![arch](http://res.cloudinary.com/digf90pwi/image/upload/v1489544554/discoverer_3_dimswt.png)
 
 ## install
 
@@ -85,7 +85,7 @@ add(1,2).then(console.log)
 
 ## environment variable
 
-* all config vars are in system environment variable
+All config items can be configured by system env variables
 
 ### server
 
@@ -121,5 +121,6 @@ add(1,2).then(console.log)
 - [x] if there is not client info when renew, server should registe
 - [x] authorize should be more attention, security with http digest auth
 - [x] center config file
+- [ ] command line var
 - [ ] server side health check
 - [ ] when ApiClient catch an exception, should refresh client list

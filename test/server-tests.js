@@ -1,15 +1,27 @@
 const assert = require("assert");
 const DiscovererClient = require('../client');
 const DiscovererServer = require('../server');
-const request = require('request').defaults({
-  json: true,
-  auth: {
-    username: process.env.C_AUTH_USER,
-    password: process.env.C_AUTH_PASS,
-    sendImmediately: false
-  }
-});
+
+
 const uuid = require('uuid');
+
+let request_default_option = {};
+if (process.env.C_AUTH_USER && process.env.C_AUTH_USER) {
+  request_default_option = {
+    json: true,
+    auth: {
+      username: process.env.C_AUTH_USER,
+      password: process.env.C_AUTH_PASS,
+      sendImmediately: false
+    }
+  }
+} else {
+  request_default_option = {
+    json: true
+  }
+}
+
+const request = require('request').defaults(request_default_option);
 
 describe('#DiscovererServer Tests', function () {
 

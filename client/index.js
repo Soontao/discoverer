@@ -37,14 +37,22 @@ class DiscovererClient {
     this.UNREGISTE_URL = `${this._server_url}${this._server_prefix}/unregiste`;
     this.CLIENTS_URL = `${this._server_url}${this._server_prefix}/clients`;
     this.SERVICES_URL = `${this._server_url}${this._server_prefix}/services`;
-    this.rp = rp.defaults({
-      json: true,
-      auth: {
-        username: config.auth_username,
-        password: config.auth_password,
-        sendImmediately: false
+    let request_default_config = {}
+    if (config.auth_username && config.auth_password)
+      request_default_config = {
+        json: true,
+        auth: {
+          username: config.auth_username,
+          password: config.auth_password,
+          sendImmediately: false
+        }
       }
-    })
+    else {
+      request_default_config = {
+        json: true
+      }
+    }
+    this.rp = rp.defaults(request_default_config);
     if (!this._service_name || !this._instance_url)
       throw new Error("should give out the service_name and this instance url")
   }

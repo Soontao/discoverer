@@ -1,7 +1,8 @@
 language: node_js
 node_js:
 - '6'
-services: mongodb
+services: 
+- mongodb
 deploy:
   provider: cloudfoundry
   api: https://api.run.pivotal.io
@@ -14,4 +15,9 @@ deploy:
     repo: Soontao/discoverer
 env:
   global:
-    secure: Ri/XKJxJHVoLlF/u+mjV3NNI3HO1VcEVImoeFPr8L3vbE00AU4tI3sNyn0wgST4Rjm1CKUuBHUBcS2XC+xrl9Nl68+wCenBKh1SH02PwNNEcgek2IjLuycOBmDN3hI9rwy5E4aCNF+YsFPX5GJrOARyK8x68Dr/bOSWGNjLNGQtyBaKiiXx6FDcfCok4i9ACTThttv9eivv3CE5o4uYjR1wtP2XHj8jw2Prh09zvj9HPeKHPYYrPR+Q8mnRhH05CQ708LtSVmUllQn+/QaTbKxEaYh5+8Juo9+HQU1hZIO0HFdhE+KVRaL1CpBbTzC+ZL2kokAOAmuPPReZPjev/5Unw8WiIkvtc2AjDucae1xnGRWy8NUso8VHlEagg6yCW58mfAaBIRSyauG5G/E9FqlHHYf5TeP4F8bk6i5XkW50uDufDg4JrEbuIWsjkEYXnUXBEZBxe+k1zC/Y9R0kWrAklrASaPFN6jEvNkKMRTSv4y2+fRhEj4jGevbD5n0QQy0skS/ORuGlqe5rBu8vjRiDui62c8d++0Iyhw64R+l8hY5uLkRQmV4dlACtam7Nn0mKWUPEHVVruDjsaEe+GsdrT2QsdzdTtEKMg18XZjw6ipusUtiEyI5XDZnwsX6YzpwiuyEjz763+1eZcPd10FsNyQYR0pTjslq/VuXlvNGY=
+    - CONNECT_URI=mongodb://127.0.0.1/discoverer
+    - USE_AUTH=true
+    - AUTH_USER=auser
+    - AUTH_PASS=apassword
+    - C_AUTH_USER=auser
+    - C_AUTH_PASS=apassword
