@@ -6,6 +6,7 @@ const debug = require('debug')('discoverer:client');
 const config = require('./config');
 const rp = require('request-promise');
 const ApiClient = require('./apiclient');
+const log = require('./logger')('c_discover_client');
 
 /**
  * DiscovererClient
@@ -84,15 +85,16 @@ class DiscovererClient {
         url: this.REGISTE_URL,
         method: "POST",
         body: this.getThisClientInfo()
-      }).then(body => {
-        this._instance_id = body.registed.instance_id;
-        this._instance_url = body.registed.instance_url;
-        this._startHeartBreak();
-        debug(`registe with info ${JSON.stringify(body, '', ' ')}`)
-        return body.registed;
-      }).catch(err => {
-        if (err) throw err;
       })
+        .then(body => {
+          this._instance_id = body.registed.instance_id;
+          this._instance_url = body.registed.instance_url;
+          this._startHeartBreak();
+          debug(`registe with info ${JSON.stringify(body, '', ' ')}`)
+          return body.registed;
+        })
+    else
+      throw new Error("had set not registe!")
   }
 
   _unregiste() {
@@ -124,7 +126,7 @@ class DiscovererClient {
 
   create_api_of(service_name) {
     const api_client = new ApiClient(service_name, this);
-    api_client.refresh_instances();
+    api_client.refresh_instances().catch(err => log(`refresh_instances fail`));
     return api_client;
   }
 
@@ -139,9 +141,6 @@ class DiscovererClient {
         this._instance_id = body.renewed.instance_id;
         this._instance_url = body.renewed.instance_url;
         return body.renewed
-      })
-      .catch(err => {
-        if (err) throw err;
       })
   }
 

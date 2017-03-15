@@ -15,12 +15,15 @@ const service_name = process.env.C_SERVICE_NAME ||
   (vcap_application && vcap_application.application_name) ||
   os.hostname();
 
+
+const instance_port = process.env.C_PORT || process.env.PORT
+
 /**
  * the url can be accessed from outside
  */
 const instance_url = process.env.C_INSTANCE_URL ||
   (vcap_application && `https://${vcap_application.uris[0]}`) ||
-  `http://${ip.address()}`;
+  `http://${ip.address()}:${instance_port || 80}`;
 
 /**
  * this instance id

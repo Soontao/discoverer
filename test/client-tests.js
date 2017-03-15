@@ -24,9 +24,7 @@ describe('#DiscovererClient Tests', function () {
         assert.ok(client.heartbreak)
         done();
       })
-      .catch(err => {
-        throw err;
-      })
+      .catch(err => done(err))
   })
 
   it('should get itself', function (done) {
@@ -35,9 +33,8 @@ describe('#DiscovererClient Tests', function () {
         assert.ok(instance)
         done();
       })
-      .catch(err => {
-        throw err;
-      })
+      .catch(err => done(err))
+
   })
 
   it('should renew this instance', function (done) {
@@ -46,9 +43,8 @@ describe('#DiscovererClient Tests', function () {
         assert.ok(renewed)
         done();
       })
-      .catch(err => {
-        throw err;
-      })
+      .catch(err => done(err))
+
   })
 
   it('should unregiste this instance', function (done) {
@@ -57,9 +53,8 @@ describe('#DiscovererClient Tests', function () {
         assert.ok(unregisted);
         done();
       })
-      .catch(err => {
-        throw err;
-      })
+      .catch(err => done(err))
+
   })
 
   it('stop heartBreak', function () {

@@ -7,6 +7,8 @@ const express = require('express');
 const rp = require('request-promise');
 const bodyParser = require('body-parser');
 
+
+
 describe("#ApiClient Tests", function () {
 
   this.timeout(0);
@@ -37,23 +39,26 @@ describe("#ApiClient Tests", function () {
 
   const add_sum_service_app =
     express()
-    .use(bodyParser.json())
-    .use(function (req, res, next) {
-      res.json({
-        result: req.body.a + req.body.b
+      .use(bodyParser.json())
+      .use(function (req, res, next) {
+        res.json({
+          result: req.body.a + req.body.b
+        });
       });
-    });
 
   const add_sum_service_server =
     http
-    .createServer(add_sum_service_app)
-    .listen(provider_server_port);
+      .createServer(add_sum_service_app)
+      .listen(provider_server_port);
 
   it("should registe service provider", function (done) {
-    provider_discover_client._registe().then(registed => {
-      assert.ok(registed.service_name, test_service_name);
-      done();
-    })
+    provider_discover_client._registe()
+      .then(registed => {
+        assert.ok(registed.service_name, test_service_name);
+        done();
+      })
+      .catch(err => done(err))
+
   })
 
   it("direct test service is ok", function (done) {
@@ -62,9 +67,7 @@ describe("#ApiClient Tests", function () {
         assert.equal(parseInt(body.result), 4)
         done()
       })
-      .catch(err => {
-        throw err;
-      })
+      .catch(err => done(err))
   });
 
   it('test service with ApiClient (manual)', function (done) {
@@ -74,9 +77,8 @@ describe("#ApiClient Tests", function () {
         assert.equal(parseInt(body.result), 4)
         done()
       })
-      .catch(err => {
-        throw err;
-      })
+      .catch(err => done(err))
+
   })
 
   it('test service with ApiClient (create by discover client)', function (done) {
@@ -87,9 +89,8 @@ describe("#ApiClient Tests", function () {
         assert.equal(parseInt(body.result), 4)
         done()
       })
-      .catch(err => {
-        throw err;
-      })
+      .catch(err => done(err))
+
   })
 
   after(done => {

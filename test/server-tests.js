@@ -53,7 +53,7 @@ describe('#DiscovererServer Tests', function () {
     request.get(`${discovererUrl}/not-exist/${uuid()}`, {
       json: true
     }, function (err, req, body) {
-      if (err) throw err;
+      assert.ifError(err);
       assert.ok(body.status = 404);
       done();
     })
@@ -61,7 +61,7 @@ describe('#DiscovererServer Tests', function () {
 
   it('should get index page', function (done) {
     request.get(`${serverUrl}`, { json: true }, function (err, req, body) {
-      if (err) throw err;
+      assert.ifError(err);
       assert.ok(body['discover_api'])
       done();
     })
