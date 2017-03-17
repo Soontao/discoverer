@@ -1,8 +1,27 @@
 const assert = require("assert");
 const DiscovererClient = require('../client');
 const DiscovererServer = require('../server');
-const request = require('request');
+
+
 const uuid = require('uuid');
+
+let request_default_option = {};
+if (process.env.C_AUTH_USER && process.env.C_AUTH_USER) {
+  request_default_option = {
+    json: true,
+    auth: {
+      username: process.env.C_AUTH_USER,
+      password: process.env.C_AUTH_PASS,
+      sendImmediately: false
+    }
+  }
+} else {
+  request_default_option = {
+    json: true
+  }
+}
+
+const request = require('request').defaults(request_default_option);
 
 describe('#DiscovererServer Tests', function () {
 
@@ -34,7 +53,7 @@ describe('#DiscovererServer Tests', function () {
     request.get(`${discovererUrl}/not-exist/${uuid()}`, {
       json: true
     }, function (err, req, body) {
-      if (err) throw err;
+      assert.ifError(err);
       assert.ok(body.status = 404);
       done();
     })
@@ -42,7 +61,7 @@ describe('#DiscovererServer Tests', function () {
 
   it('should get index page', function (done) {
     request.get(`${serverUrl}`, { json: true }, function (err, req, body) {
-      if (err) throw err;
+      assert.ifError(err);
       assert.ok(body['discover_api'])
       done();
     })

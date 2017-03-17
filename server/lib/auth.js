@@ -3,16 +3,26 @@ const logger = require('./logger')("auth");
 const passport = require('passport');
 const rand_str = require("randomstring");
 const BasicStrategy = require('passport-http').BasicStrategy;
+const DigestStrategy = require('passport-http').DigestStrategy;
 const config = require('./config');
 
-const http_basic_username = config.http_basic_username;
-const http_basic_password = config.http_basic_password;
+const auth_username = config.auth_username;
+const auth_password = config.auth_password;
 
-logger(`use http basic auth: username:${http_basic_username}, password:${http_basic_password}`);
+logger(`use http degist auth: username:${auth_username}, password:${auth_password}`);
 
-passport.use(new BasicStrategy((username, password, done) => {
-  if (username == http_basic_username && password == http_basic_password) done(null, true)
-  else done(null, false)
-}))
+passport.use(new DigestStrategy(
+  { qop: 'auth' },
+  (username, done) => {
+    if (username == auth_username)
+      return done(null, auth_username, auth_password)
+    else
+      return done(null, false)
+  },
+  (params, done) => {
+    done(null, true)
+  }
 
-module.exports = passport.authenticate('basic', { session: false });
+))
+
+module.exports = passport.authenticate('digest', { session: false });

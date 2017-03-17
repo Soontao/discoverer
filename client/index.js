@@ -6,7 +6,7 @@ const debug = require('debug')('discoverer:client');
 const config = require('./config');
 const rp = require('request-promise');
 const ApiClient = require('./apiclient');
-
+const log = require('./logger')('c_discover_client');
 
 /**
  * DiscovererClient
@@ -38,6 +38,22 @@ class DiscovererClient {
     this.UNREGISTE_URL = `${this._server_url}${this._server_prefix}/unregiste`;
     this.CLIENTS_URL = `${this._server_url}${this._server_prefix}/clients`;
     this.SERVICES_URL = `${this._server_url}${this._server_prefix}/services`;
+    let request_default_config = {}
+    if (config.auth_username && config.auth_password)
+      request_default_config = {
+        json: true,
+        auth: {
+          username: config.auth_username,
+          password: config.auth_password,
+          sendImmediately: false
+        }
+      }
+    else {
+      request_default_config = {
+        json: true
+      }
+    }
+    this.rp = rp.defaults(request_default_config);
     if (!this._service_name || !this._instance_url)
       throw new Error("should give out the service_name and this instance url")
   }
@@ -65,29 +81,28 @@ class DiscovererClient {
 
   _registe() {
     if (!config.no_registe)
-      return rp({
+      return this.rp({
         url: this.REGISTE_URL,
         method: "POST",
-        json: true,
         body: this.getThisClientInfo()
-      }).then(body => {
-        this._instance_id = body.registed.instance_id;
-        this._instance_url = body.registed.instance_url;
-        this._startHeartBreak();
-        debug(`registe with info ${JSON.stringify(body, '', ' ')}`)
-        return body.registed;
-      }).catch(err => {
-        if (err) throw err;
       })
+        .then(body => {
+          this._instance_id = body.registed.instance_id;
+          this._instance_url = body.registed.instance_url;
+          this._startHeartBreak();
+          debug(`registe with info ${JSON.stringify(body, '', ' ')}`)
+          return body.registed;
+        })
+    else
+      throw new Error("had set not registe!")
   }
 
   _unregiste() {
-    return rp({
-        url: this.UNREGISTE_URL,
-        method: "DELETE",
-        json: true,
-        body: this.getThisClientInfo()
-      })
+    return this.rp({
+      url: this.UNREGISTE_URL,
+      method: "DELETE",
+      body: this.getThisClientInfo()
+    })
       .then(body => body.unregisted)
       .catch(err => {
         if (err) throw err;
@@ -98,12 +113,11 @@ class DiscovererClient {
     const option = {
       url: this.CLIENTS_URL,
       method: "GET",
-      json: true,
       body: this.getThisClientInfo()
     }
     if (opts) option.qs = opts;
 
-    return rp(option)
+    return this.rp(option)
       .then(body => body.instances)
       .catch(err => {
         if (err) throw err;
@@ -112,7 +126,7 @@ class DiscovererClient {
 
   create_api_of(service_name) {
     const api_client = new ApiClient(service_name, this);
-    api_client.refresh_instances();
+    api_client.refresh_instances().catch(err => log(`refresh_instances fail`));
     return api_client;
   }
 
@@ -120,17 +134,13 @@ class DiscovererClient {
     const option = {
       url: this.RENEW_URL,
       method: "PUT",
-      json: true,
       body: this.getThisClientInfo()
     }
-    return rp(option)
+    return this.rp(option)
       .then(body => {
         this._instance_id = body.renewed.instance_id;
         this._instance_url = body.renewed.instance_url;
         return body.renewed
-      })
-      .catch(err => {
-        if (err) throw err;
       })
   }
 

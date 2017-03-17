@@ -1,10 +1,8 @@
 const rp = require('request-promise');
-
+const Logger = require('./logger');
 
 /**
  * API Client
- * 
- * 在service instances中轮训
  * 
  * @class ApiClient
  */
@@ -21,9 +19,13 @@ class ApiClient {
     this._discover_client = discover_client;
     this._service_name = service_name;
     this._instance_index = 0;
+    this._log = Logger(`c_apiclient_${service_name}`);
   }
 
   set_instances(instances) {
+    // if instance num changed, reset the currnet instance
+    if (this._instances && instances && (instances.length != this._instances.length))
+      this._instance_index = 0;
     this._instances = instances;
     this._instances_num = instances.length;
   }
@@ -45,10 +47,9 @@ class ApiClient {
       })
       .then(instances => {
         this.set_instances(instances)
+        if (instances.length == 0)
+          this._log(`service ${this._service_name} not have any instances`);
         return instances;
-      })
-      .catch(err => {
-        if (err) throw err;
       })
   }
 
@@ -78,15 +79,17 @@ class ApiClient {
     return this
       .get_instances()
       .then(instances => {
+        /**
+         * this process should be modular
+         */
         const currnet_instance = instances[this._instance_index % this._instances_num];
         const uri = `${currnet_instance.instance_url}/${path}`;
         this._instance_index += 1;
+        /**
+         * ---
+         */
         return rp(uri, option)
-          .catch(err => {
-            if (err) throw err
-          });
       })
-
 
   }
 }
