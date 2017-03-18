@@ -8,7 +8,7 @@ in dev now. document will be wrote later, thanks
 
 ## Architecture
 
-![arch](https://res.cloudinary.com/digf90pwi/image/upload/v1489759745/discoverer_awfc33.png)
+![arch](https://res.cloudinary.com/digf90pwi/image/upload/v1489805512/discoverer_1_qzlptg.png)
 
 ## install
 
@@ -92,7 +92,7 @@ All config items can be configured by system env variables
 1. USE_AUTH, default is false, set "true" will enable http digest auth
 1. AUTH_USER, avoid server access by un auth user, system will generte a random str if it not set
 1. AUTH_PASS, avoid server access by un auth user, system will generte a random str if it not set
-1. MONGO_CONNECT_URI, **required**, default is mongodb://localhost/discoverer
+1. CONNECT_URI, **required**, default is mongodb://localhost/discoverer
 1. LISTEN_HOST, default is 0.0.0.0
 1. PORT, default is 3999
 1. CHECK_INTERVAL, default is 2s, 服务器会每隔几秒检测数据库中是否有超时的instance，有的话就会移除记录
