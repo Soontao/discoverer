@@ -2,9 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Soontao/discoverer.svg?branch=master)](https://travis-ci.org/Soontao/discoverer) [![Coverage Status](https://coveralls.io/repos/github/Soontao/discoverer/badge.svg?branch=master)](https://coveralls.io/github/Soontao/discoverer?branch=master)
 
-nodejs service discover
-
-in dev now. document will be wrote later, thanks
+lightly nodejs service discover
 
 ## Architecture
 
@@ -12,7 +10,7 @@ in dev now. document will be wrote later, thanks
 
 ## install
 
-```
+```bash
 npm i discoverer --save
 ```
 
@@ -33,22 +31,16 @@ const restify = require('restify');
 const DiscovererClient = require('discoverer').DiscovererClient;
 
 const listenPort = process.env.PORT || 1234;
-
 const server = restify.createServer();
-
 const discovererClient = new DiscovererClient();
 
 server.use(restify.queryParser());
 
-server.get('/api/v1/add', function (req, res, next) {
-  res.json({
-    sum: parseInt(req.query.a) + parseInt(req.query.b)
-  });
+server.get('/api/v1/add', (req, res, next) => {
+  res.json({sum: parseInt(req.query.a) + parseInt(req.query.b)});
 });
 
-server.listen(listenPort, () => {
-  console.log(`${server.name} listen on ${server.url}`)
-})
+server.listen(listenPort)
 
 discovererClient._registe(info => console.log(info))
 ```
